@@ -1,7 +1,8 @@
+import json
 from django.shortcuts import render
-
 from django.http import JsonResponse
-from .models import User
+from django.views.decorators.csrf import csrf_exempt
+from .models import User, Post
 
 
 def get_users(request):
@@ -11,11 +12,6 @@ def get_users(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import User
-
 
 @csrf_exempt
 def create_user(request):
@@ -24,12 +20,8 @@ def create_user(request):
             data = json.loads(request.body)
             user = User.objects.create(username=data['username'], email=data['email'])
             return JsonResponse({'id': user.id, 'message': 'User created successfully'}, status=201)
-        except KeyError as e:
-             return JsonResponse({'error': f'Missing field: {str(e)}'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-
-from .models import Post
 
 
 def get_posts(request):
@@ -38,6 +30,7 @@ def get_posts(request):
         return JsonResponse(posts, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
 
 @csrf_exempt
 def create_post(request):
@@ -51,3 +44,4 @@ def create_post(request):
             return JsonResponse({'error': 'Author not found'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+
