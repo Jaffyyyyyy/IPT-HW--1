@@ -1,52 +1,35 @@
-from rest_framework.views import APIView
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework import status
-from .models import User, Post, Comment
-from .serializers import UserSerializer, PostSerializer, CommentSerializer
+from rest_framework.views import APIView
+from .models import User, Post
+from .serializers import UserSerializer, PostSerializer
+from django.shortcuts import get_object_or_404 # For more robust error handling
 
+# User Views
+class UserListCreateView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # Allow anyone to read, but only authenticated to create
 
-class UserListCreate(APIView):
-    def get(self, request):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # Allow anyone to read, but only authenticated to update/delete
+    # Optionally, add a custom permission to allow users to only edit their own profile
 
+from .permissions import IsPostAuthor
 
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Post Views
+class PostListCreateView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # Allow anyone to read, but only authenticated to create
 
+    def perform_create(self, serializer):
+        # Set the author of the post to the currently authenticated user
+        serializer.save(author=self.request.user)
 
-class PostListCreate(APIView):
-    def get(self, request):
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
-
-
-    def post(self, request):
-        serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CommentListCreate(APIView):
-    def get(self, request):
-        comments = Comment.objects.all()
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
-
-
-    def post(self, request):
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsPostAuthor] # ADDED IsPostAuthor
