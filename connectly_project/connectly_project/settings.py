@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9)-pd4e7)4^$s8vvk7ji0isjq^$#h4)(c!mn%%e-%gm6kn^abw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Add Django REST Framework
+    'rest_framework.authtoken',  # Token Authentication
+    'django_extensions',
     'posts.apps.PostsConfig',
 ]
 
@@ -117,3 +119,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Password Hashing
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+# HTTPS Security Settings
+# Note: SECURE_SSL_REDIRECT is disabled for development with runserver_plus
+# The HTTPS server handles SSL directly, so no redirect is needed
+SECURE_SSL_REDIRECT = False  # Set to True in production with a proper reverse proxy
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
