@@ -25,18 +25,7 @@ SECRET_KEY = 'django-insecure-9)-pd4e7)4^$s8vvk7ji0isjq^$#h4)(c!mn%%e-%gm6kn^abw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-
-ALLOWED_HOSTS = []
-=======
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
->>>>>>> mainrepo/master
 
 
 # Application definition
@@ -50,14 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Add Django REST Framework
-<<<<<<< HEAD
-    'rest_framework_simplejwt',
-    'django_extensions', # ADDED for runserver_plus command
-=======
     'rest_framework.authtoken',  # Token Authentication
+    'rest_framework_simplejwt',  # ADDED for JWT based on Security_Enhancements_Code_Changes.txt
     'django_extensions',
-    'posts.apps.PostsConfig',
->>>>>>> mainrepo/master
 ]
 
 MIDDLEWARE = [
@@ -102,7 +86,7 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -142,18 +126,34 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
+# https://docs.djangoproject.com/en/6.0/topics/static-files/
 
 STATIC_URL = 'static/'
 
-<<<<<<< HEAD
+# Password Hashing
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+# HTTPS Security Settings
+# Note: SECURE_SSL_REDIRECT is disabled for development with runserver_plus
+# The HTTPS server handles SSL directly, so no redirect is needed
+SECURE_SSL_REDIRECT = False  # Set to True in production with a proper reverse proxy
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_PRELOAD = True
+
+# REST Framework Configuration for JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication', # For browsable API
+        'rest_framework.authentication.SessionAuthentication',  # For browsable API
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', # Default to requiring authentication
+        'rest_framework.permissions.IsAuthenticated',  # Default to requiring authentication
     ),
 }
 
@@ -190,22 +190,3 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
-=======
-# Password Hashing
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-]
-
-# HTTPS Security Settings
-# Note: SECURE_SSL_REDIRECT is disabled for development with runserver_plus
-# The HTTPS server handles SSL directly, so no redirect is needed
-SECURE_SSL_REDIRECT = False  # Set to True in production with a proper reverse proxy
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
->>>>>>> mainrepo/master

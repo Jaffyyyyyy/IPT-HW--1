@@ -40,9 +40,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Post(models.Model):
-    content = models.TextField()
+    POST_TYPES = (
+        ('text', 'Text Post'),
+        ('image', 'Image Post'),
+        ('video', 'Video Post'),
+    )
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, default='No Title')
+    content = models.TextField()
+    post_type = models.CharField(max_length=10, choices=POST_TYPES, default='text')
+    metadata = models.JSONField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True) # Good practice to include
+
+    def __str__(self):
+        return f"{self.title} by {self.author.username}"
+
+# Added Comment model
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.content[:50]
+        return f"Comment by {self.author.username} on {self.post.title}"
