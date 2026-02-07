@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     UserListCreate, PostListCreate, PostDetailView,
     CommentListCreate, RegisterUser, LoginUser, ProtectedView,
+    TaskListView, CreateTaskView, TaskDetailView,
 )
 
 
@@ -13,5 +14,8 @@ urlpatterns = [
     path('register/', RegisterUser.as_view(), name='register-user'),
     path('login/', LoginUser.as_view(), name='login-user'),
     path('protected/', ProtectedView.as_view(), name='protected-view'),
+    path('tasks/', TaskListView.as_view(), name='task-list'),
+    path('tasks/create/', CreateTaskView.as_view(), name='create-task'),
+    path('tasks/<int:pk>/', TaskDetailView.as_view(), name='task-detail'),
 ]
 
